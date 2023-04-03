@@ -1,9 +1,11 @@
 from torch import nn
 from constants.ArchitectureConstants import *
+from src.TransformerEncoder import TransformerEncoder
 
 class GraphBasedArchitecture(nn.Module):
     
-    def __init__(self, encoder_model, graph_architecture, model_dimension, target_size):
+    def __init__(self, encoder_model, graph_architecture, model_dimension,
+                 target_size, transformer_layers=4, num_heads = 4, dropout=0.2):
         """
         encoder_model: Torch model to encode input (preprocessor)
         graph: {
@@ -20,6 +22,20 @@ class GraphBasedArchitecture(nn.Module):
         self.graph = graph_architecture
         self.to_evaluate_loss = nn.Linear(model_dimension, target_size)
         self.layernorm = nn.LayerNorm(3 * 32 * 32).cuda()
+        self.transformer = TransformerEncoder(
+            num_layers=transformer_layers,
+            input_dim = model_dimension,
+            dim_feedforward = 2* model_dimension,
+            num_heads = num_heads,
+            dropout = dropout
+        )
+        self.output_net = nn.Sequential(
+            nn.Linear(model_dimension, model_dimension),
+            nn.LayerNorm(model_dimension),
+            nn.ReLU(inplace=True),
+            nn.Dropout(dropout),
+            nn.Linear(model_dimension, target_size)
+        )
     
     def forward(self, input, batch_size=batch_size):
         # Generate encoding version
@@ -53,9 +69,10 @@ class GraphBasedArchitecture(nn.Module):
                 node_to_process(after_connection, current_node, batch_size)
         
         # Aggregate all connections
-        # TODO: Learnable weights for each conection in the sum given the input 
-        aggregated = self.layernorm(sum(self.graph[item]["node"].memory_connection for item in self.graph).reshape(batch_size, -1))
-        return self.to_evaluate_loss(aggregated)
+        # TODO: Learnable weights for each conection in the sum given the input
+        tensor_to_apply_attention = torch.cat([self.graph[item]["node"].memory_connection for item in self.graph ])
+        aggregated = self.transformer(tensor_to_apply_attention)
+        return self.output_net(aggregated)
     
     def empty_connections(self):
         for node in self.graph:

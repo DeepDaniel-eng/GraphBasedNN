@@ -80,7 +80,7 @@ def train(net, trainLoader, testloader, criterion, optimizer, scheduler, epochs,
         scheduler.step()
         if wandb_:
             wandb.log({"TrainAccuracy": correct/len(trainLoader.dataset), "Epoch": epoch, "TotalLossPerEPoch": total_loss_per_epoch})
-        test_accuracy(trainLoader, testloader, 64, True)
+        test_accuracy(net, testloader, 64, True)
 
 
 
