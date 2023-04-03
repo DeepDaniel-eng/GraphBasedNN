@@ -1,6 +1,7 @@
 from torch import nn
 from constants.ArchitectureConstants import *
 from src.TransformerEncoder import TransformerEncoder
+import torch
 
 class GraphBasedArchitecture(nn.Module):
     
@@ -29,8 +30,15 @@ class GraphBasedArchitecture(nn.Module):
             num_heads = num_heads,
             dropout = dropout
         )
-        self.output_net = nn.Sequential(
+        self.output_transf_net = nn.Sequential(
             nn.Linear(model_dimension, model_dimension),
+            nn.LayerNorm(model_dimension),
+            nn.ReLU(inplace=True),
+            nn.Dropout(dropout),
+            nn.Linear(model_dimension, target_size)
+        )
+        self.out = nn.Sequential(
+            nn.Linear(max(self.graph) * target_size, model_dimension),
             nn.LayerNorm(model_dimension),
             nn.ReLU(inplace=True),
             nn.Dropout(dropout),
@@ -70,9 +78,11 @@ class GraphBasedArchitecture(nn.Module):
         
         # Aggregate all connections
         # TODO: Learnable weights for each conection in the sum given the input
-        tensor_to_apply_attention = torch.cat([self.graph[item]["node"].memory_connection for item in self.graph ])
+        tensor_to_apply_attention = torch.cat([self.graph[item]["node"].memory_connection.reshape(batch_size,1,-1) for item in self.graph ], axis=1)
         aggregated = self.transformer(tensor_to_apply_attention)
-        return self.output_net(aggregated)
+        out =  self.output_transf_net(aggregated).reshape(batch_size, -1)
+        return self.out(out)
+
     
     def empty_connections(self):
         for node in self.graph:
