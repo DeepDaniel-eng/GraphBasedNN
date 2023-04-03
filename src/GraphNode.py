@@ -1,5 +1,5 @@
 from torch import nn
-
+from constants.ArchitectureConstants import *
 
 class GraphNode(nn.Module):
 
@@ -12,7 +12,7 @@ class GraphNode(nn.Module):
         self.aggregate = aggregate
         self.layernorm = nn.LayerNorm(3 * 32 * 32).cuda()
 
-    def forward(self, x, node_from_id, batch_size=64):
+    def forward(self, x, node_from_id, batch_size=batch_size):
         hidden = self.layer(x, batch_size)
         if self.post_process_func is not None:
             hidden = self.post_process_func(hidden)

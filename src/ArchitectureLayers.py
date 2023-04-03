@@ -1,4 +1,7 @@
 import torch
+from torch import nn
+from constants.ArchitectureConstants import *
+
 class ConnectionBlock(nn.Module):
 
     def __init__(self):
@@ -29,7 +32,7 @@ class ConvBlock(nn.Module):
         self.linearshape = nn.Linear(8192, 3072)
         self.act4 = nn.ReLU()
 
-    def forward(self, x, batch_size=64):
+    def forward(self, x, batch_size=batch_size):
         x = self.linearshape(x.reshape(batch_size, -1))
         return self.act4(x).reshape(batch_size, 3, 32, 32)
 

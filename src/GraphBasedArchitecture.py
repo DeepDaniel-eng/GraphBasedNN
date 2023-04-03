@@ -1,4 +1,5 @@
 from torch import nn
+from constants.ArchitectureConstants import *
 
 class GraphBasedArchitecture(nn.Module):
     
@@ -20,7 +21,7 @@ class GraphBasedArchitecture(nn.Module):
         self.to_evaluate_loss = nn.Linear(model_dimension, target_size)
         self.layernorm = nn.LayerNorm(3 * 32 * 32).cuda()
     
-    def forward(self, input, batch_size=64):
+    def forward(self, input, batch_size=batch_size):
         # Generate encoding version
         graph_input = self.encoder_model(input)
 
