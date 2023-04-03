@@ -30,7 +30,6 @@ def generate_architecture_1():
     params_to_append_generator = [t for x in params_generator for t in x]
     optimizer = optim.Adam(params_non_generator + params_to_append_generator, lr=1e-3)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.2)
-    n_iters = 20
 
 def get_optimizer_from_graph(graph_arch):
     params = [x for x in graph_arch.parameters()] + \
@@ -41,6 +40,9 @@ def get_optimizer_from_graph(graph_arch):
     params_to_append_generator = [t for x in params_generator for t in x]
     optimizer = optim.Adam(params_non_generator + params_to_append_generator, lr=lr)
     return optimizer
+
+def get_scheduler(optimizer):
+    return optim.lr_scheduler.StepLR(optimizer, step_size=scheduler_step_size, scheduler_gamma=0.2)
 
 if __name__ == '__main__':
     input_size = 512
