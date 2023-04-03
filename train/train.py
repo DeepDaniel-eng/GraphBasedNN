@@ -1,6 +1,10 @@
 from tqdm import tqdm
 import wandb
 import torch
+from torch import nn
+from constants.ArchitectureConstants import *
+from utils.generate_base_graph import generate_architecture_1, get_optimizer_from_graph, get_scheduler
+from data.set_up_data import set_up_CIFAR10_data
 from constants.ArchitectureConstants import *
 
 if wandb_:
@@ -79,3 +83,11 @@ def train(net, trainLoader, testloader, criterion, optimizer, scheduler, epochs,
 
 
     print('Finished Training')
+
+if __name__ == '__main__':
+    graph_arch = generate_architecture_1()
+    trainloader, testloader = set_up_CIFAR10_data()
+    criterion = nn.CrossEntropyLoss()
+    optimizer = get_optimizer_from_graph(graph_arch)
+    scheduler = get_scheduler(optimizer)
+    train(graph_arch, trainloader, testloader, criterion, optimizer,scheduler, n_iters, batch_size)
