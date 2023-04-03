@@ -35,7 +35,7 @@ def get_optimizer_from_graph(graph_arch):
     return optimizer
 
 def get_scheduler(optimizer):
-    return optim.lr_scheduler.StepLR(optimizer, step_size=scheduler_step_size, scheduler_gamma=0.2)
+    return optim.lr_scheduler.StepLR(optimizer, step_size=scheduler_step_size, gamma=scheduler_gamma)
 
 if __name__ == '__main__':
     input_size = 512

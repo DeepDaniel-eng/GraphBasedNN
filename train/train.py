@@ -2,6 +2,8 @@ from tqdm import tqdm
 import wandb
 import torch
 from torch import nn
+import sys
+sys.path[0] = sys.path[0].replace('train','')
 from constants.ArchitectureConstants import *
 from utils.generate_base_graph import generate_architecture_1, get_optimizer_from_graph, get_scheduler
 from data.set_up_data import set_up_CIFAR10_data
