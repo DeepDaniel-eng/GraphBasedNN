@@ -5,7 +5,7 @@ from torchvision.transforms.autoaugment import AutoAugmentPolicy
 from constants.ArchitectureConstants import *
 
 def set_up_CIFAR10_data():
-    transform = transforms.Compose([
+    transform_train = transforms.Compose([
                         transforms.RandomHorizontalFlip(),
                         transforms.RandomCrop(32, 4),
                         transforms.AutoAugment(AutoAugmentPolicy.CIFAR10),
@@ -14,14 +14,20 @@ def set_up_CIFAR10_data():
                                             std=[0.229, 0.224, 0.225]),
                         transforms.RandomErasing()
                     ])
+    
+    transform_test = transforms.Compose([
+                        transforms.ToTensor(),
+                        transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                            std=[0.229, 0.224, 0.225]),
+                    ])
 
     trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
-                                            download=True, transform=transform)
+                                            download=True, transform=transform_train)
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
                                             shuffle=True, num_workers=2, drop_last=True)
 
     testset = torchvision.datasets.CIFAR10(root='./data', train=False,
-                                        download=True, transform=transform)
+                                        download=True, transform=transform_test)
     testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
                                             shuffle=True, num_workers=2, drop_last=True)
 
