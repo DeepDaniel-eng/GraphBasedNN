@@ -20,7 +20,7 @@ def generate_graph_base_architecture(n_nodes, base_model_node=nn.Linear,base_mod
 def generate_architecture_1():
     graph = generate_graph_base_architecture(graph_size)
     encoder_model = nn.Sequential(ConnectionBlock(), ConvBlock())
-    return GraphBasedArchitecture(encoder_model, graph, hidden_dimension_size, output_size).to("cuda")
+    return encoder_model, GraphBasedArchitecture(encoder_model, graph, hidden_dimension_size, output_size).to("cuda")
     
 
 

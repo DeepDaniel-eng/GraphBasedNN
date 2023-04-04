@@ -45,7 +45,7 @@ def test_accuracy(net, testloader, bs, wandb_ = wandb_):
 
 
 def train(net, trainLoader, testloader, criterion, optimizer, scheduler, epochs, bs):
-    for epoch in range(10):  # loop over the dataset multiple times
+    for epoch in range(epochs):  # loop over the dataset multiple times
         net.train()
         running_loss = 0.0
         correct = 0
@@ -80,7 +80,7 @@ def train(net, trainLoader, testloader, criterion, optimizer, scheduler, epochs,
         scheduler.step()
         if wandb_:
             wandb.log({"TrainAccuracy": correct/len(trainLoader.dataset), "Epoch": epoch, "TotalLossPerEPoch": total_loss_per_epoch})
-        test_accuracy(net, testloader, 64, True)
+        test_accuracy(net, testloader, batch_size, True)
 
 
 

@@ -7,6 +7,8 @@ from constants.ArchitectureConstants import *
 def set_up_CIFAR10_data():
     transform = transforms.Compose([
                         transforms.RandomHorizontalFlip(),
+                        transforms.RandomCrop(32, 4),
+                        transforms.AutoAugment(AutoAugmentPolicy.CIFAR10),
                         transforms.ToTensor(),
                         transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                             std=[0.229, 0.224, 0.225]),
