@@ -3,7 +3,7 @@ from constants.ArchitectureConstants import *
 
 class GraphNode(nn.Module):
 
-    def __init__(self, identifier, layer, post_process_func=None):
+    def __init__(self, identifier, layer, post_process_func=None, aggregate='sum'):
         super().__init__()
         self.layer = layer
         self.post_process_func = post_process_func
@@ -26,4 +26,6 @@ class GraphNode(nn.Module):
             # Alternative is concatenation
             # TODO: Learnable weights depending on input
             self.memory_connection = self.layernorm(self.memory_connection.reshape(batch_size, -1) + hidden.reshape(batch_size, -1)).reshape(batch_size, 3 , 32, 32)
-        
+    
+    def get_aggregable_memory_connection(self):
+        self.memory_connection
