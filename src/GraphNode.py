@@ -10,10 +10,10 @@ class GraphNode(nn.Module):
         self.memory_connection = None
         self.identifier = identifier
         self.aggregate = aggregate
-        self.layernorm = nn.LayerNorm(3 * 32 * 32).cuda()
-        self.aggregation = nn.Sequential(
-            nn.Linear()
-        )
+        self.batchnorm = nn.BatchNorm2d(3).cuda()
+        self.node_prediction = nn.Linear(32*32, 10).cuda()
+        self.node_activation = nn.ReLU()
+        self.dropout = nn.Dropout(0.3).cuda()
 
     def forward(self, x, node_from_id, batch_size=batch_size):
         hidden = self.layer(x, batch_size)
@@ -25,7 +25,7 @@ class GraphNode(nn.Module):
             # Temporally aggregating by sum because of computing limitation
             # Alternative is concatenation
             # TODO: Learnable weights depending on input
-            self.memory_connection = self.layernorm(self.memory_connection.reshape(batch_size, -1) + hidden.reshape(batch_size, -1)).reshape(batch_size, 3 , 32, 32)
+            self.memory_connection = self.batchnorm((self.memory_connection + hidden)/2)
     
-    def get_aggregable_memory_connection(self):
-        self.memory_connection
+    def transform_lattent_space(self):
+        return self.node_activation(self.dropout((self.node_prediction(self.memory_connection.sum(axis=1).reshape(batch_size, -1)))))

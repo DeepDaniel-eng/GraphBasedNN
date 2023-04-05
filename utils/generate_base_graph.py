@@ -31,7 +31,7 @@ def get_optimizer_from_graph(graph_arch):
     params_non_generator = [x for x in params if type(x) == nn.parameter.Parameter]
     params_generator = [x for x in params if type(x) != nn.parameter.Parameter]
     params_to_append_generator = [t for x in params_generator for t in x]
-    optimizer = optim.SGD(params_non_generator + params_to_append_generator, lr=lr, momentum=0.9)
+    optimizer = optim.AdamW(params_non_generator + params_to_append_generator, lr=lr)
     return optimizer
 
 def get_scheduler(optimizer):

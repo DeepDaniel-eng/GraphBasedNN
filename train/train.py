@@ -65,7 +65,12 @@ def train(net, trainLoader, testloader, criterion, optimizer, scheduler, epochs,
             current_correct = (predicted == labels).sum().item()
             correct += current_correct    
             wandb.log({"BatchCorrect": current_correct/64 * 100}, commit=False)
+            
+            for node in net.graph:
+                predicted = net.graph[node]["node"].transform_lattent_space()
+                loss += criterion(predicted, labels)/ len(net.graph)
             loss.backward()
+
             optimizer.step()
             net.empty_connections()
             # print statistics

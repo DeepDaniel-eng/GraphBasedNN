@@ -6,7 +6,7 @@ import torch
 class GraphBasedArchitecture(nn.Module):
     
     def __init__(self, encoder_model, graph_architecture, model_dimension,
-                 target_size, transformer_layers=4, num_heads = 4, dropout=0.2):
+                 target_size, transformer_layers=6, num_heads = 6, dropout=0.3):
         """
         encoder_model: Torch model to encode input (preprocessor)
         graph: {
