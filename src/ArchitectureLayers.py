@@ -30,7 +30,7 @@ class ConvBlock(nn.Module):
     def __init__(self):
         super().__init__()
         # Input 32 x 16 x 16 => output 3 x 32 x 32
-        self.convs = nn.ModuleList([nn.Conv2d(32, 3, 5, padding=2)] for i in range(4))
+        self.convs = nn.ModuleList([nn.Conv2d(32, 3, 5, padding=2) for i in range(4)])
         self.linearshape = nn.Linear(8192, 3072)
         self.act4 = nn.ReLU()
 
