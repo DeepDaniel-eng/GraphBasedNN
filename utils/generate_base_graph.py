@@ -31,11 +31,13 @@ def get_optimizer_from_graph(graph_arch):
     params_non_generator = [x for x in params if type(x) == nn.parameter.Parameter]
     params_generator = [x for x in params if type(x) != nn.parameter.Parameter]
     params_to_append_generator = [t for x in params_generator for t in x]
-    optimizer = optim.Adam(params_non_generator + params_to_append_generator, lr=lr)
+    optimizer = optim.SGD(params_non_generator + params_to_append_generator, lr=lr, momentum=0.9)
     return optimizer
 
 def get_scheduler(optimizer):
-    return optim.lr_scheduler.StepLR(optimizer, step_size=scheduler_step_size, gamma=scheduler_gamma)
+    from torch.optim.lr_scheduler import ExponentialLR
+    return ExponentialLR(optimizer=optimizer, gamma=0.98)
+    #return optim.lr_scheduler.StepLR(optimizer, step_size=scheduler_step_size, gamma=scheduler_gamma)
 
 if __name__ == '__main__':
     input_size = 512

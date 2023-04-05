@@ -59,8 +59,8 @@ class GraphBasedArchitecture(nn.Module):
         
 
         """
-        At this point each node has processed the encoding output so its memory looks like
-        memory = {0 : <encoded_plus_node_tensor>}
+        Memory connection represents a status of the node after processing the base encoded input
+        and the previously iterated nodes
         """
 
         # Apply all reltaionships between nodes

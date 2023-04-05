@@ -29,10 +29,22 @@ class ConvBlock(nn.Module):
     
     def __init__(self):
         super().__init__()
+        # Input 32 x 16 x 16 => output 3 x 32 x 32
+        self.convs = nn.ModuleList([nn.Conv2d(32, 3, 5, padding=2)] for i in range(4))
         self.linearshape = nn.Linear(8192, 3072)
         self.act4 = nn.ReLU()
 
     def forward(self, x, batch_size=batch_size):
-        x = self.linearshape(x.reshape(batch_size, -1))
-        return self.act4(x).reshape(batch_size, 3, 32, 32)
+        out = torch.zeros(batch_size, 3, 32, 32)
+        idxs = [(0,0), (16,16)
+                [(0,16), (0,32)],
+                [(16, 0), (16,32)],
+                [(16,16), (16,32)]
+                ]
+        for i in len(self.convs):
+            conv = self.convs[i]
+            sub_x = conv(x)
+            start, end = idxs[i]
+            out[batch_size, :, start[0]:end[0], start[1]:end[1]] = sub_x
+        return self.act4(out)
 

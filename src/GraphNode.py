@@ -3,7 +3,7 @@ from constants.ArchitectureConstants import *
 
 class GraphNode(nn.Module):
 
-    def __init__(self, identifier, layer, post_process_func=None, aggregate='sum'):
+    def __init__(self, identifier, layer, post_process_func=None):
         super().__init__()
         self.layer = layer
         self.post_process_func = post_process_func
@@ -11,6 +11,9 @@ class GraphNode(nn.Module):
         self.identifier = identifier
         self.aggregate = aggregate
         self.layernorm = nn.LayerNorm(3 * 32 * 32).cuda()
+        self.aggregation = nn.Sequential(
+            nn.Linear()
+        )
 
     def forward(self, x, node_from_id, batch_size=batch_size):
         hidden = self.layer(x, batch_size)
